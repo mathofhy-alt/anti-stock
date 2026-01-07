@@ -119,9 +119,9 @@ export function getHighValuePage() {
     // Priority List: Tax > Dividend > Etc
     const priorityTargets = [
         { c: 'us-stocks', s: 'tax' },
-        { c: 'dividend', s: 'monthly' },
-        { c: 'etf', s: 'dividend' },
-        { c: 'us-stocks', s: 'dividend-tax' }
+        { c: 'dividend', s: 'monthly-dividend-realty-income-o' },
+        { c: 'etf', s: 'monthly-dividend-etf-list' },
+        { c: 'us-stocks', s: 'dividend-tax-reclaim' }
     ];
 
     // Randomly pick one to avoid fatigue

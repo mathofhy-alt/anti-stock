@@ -48,15 +48,17 @@ export default function ScrollRetentionEngine({ nextGuide, highValueGuide }) {
             </div>
 
             {/* 2. High Value Card Overlay (85%) - More Prominent */}
-            <div className={`${styles.highValueCard} ${showCard ? styles.visible : ''}`}>
-                <button onClick={() => setDismissed(true)} className={styles.cardCloseBtn}>×</button>
-                <div className={styles.cardLabel}>🔥 수익 극대화 필독</div>
-                <h3 className={styles.cardTitle}>{highValueGuide.title}</h3>
-                <p className={styles.cardDesc}>{highValueGuide.description}</p>
-                <Link href={highValueGuide.url} className={styles.cardButton}>
-                    지금 확인하기 →
-                </Link>
-            </div>
+            {highValueGuide && (
+                <div className={`${styles.highValueCard} ${showCard ? styles.visible : ''}`}>
+                    <button onClick={() => setDismissed(true)} className={styles.cardCloseBtn}>×</button>
+                    <div className={styles.cardLabel}>🔥 수익 극대화 필독</div>
+                    <h3 className={styles.cardTitle}>{highValueGuide.title}</h3>
+                    <p className={styles.cardDesc}>{highValueGuide.description}</p>
+                    <Link href={highValueGuide.url} className={styles.cardButton}>
+                        지금 확인하기 →
+                    </Link>
+                </div>
+            )}
         </>
     );
 }
