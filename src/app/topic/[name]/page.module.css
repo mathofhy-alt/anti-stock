@@ -1,0 +1,104 @@
+.container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 50px;
+    padding: 40px 20px;
+    background: linear-gradient(180deg, rgba(0, 219, 189, 0.05) 0%, transparent 100%);
+    border-radius: 20px;
+    border: 1px solid rgba(0, 219, 189, 0.1);
+}
+
+.label {
+    color: var(--accent-color);
+    font-size: 0.9rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+.title {
+    font-size: 2.5rem;
+    margin: 0 0 20px 0;
+    color: #fff;
+}
+
+.description {
+    color: #aaa;
+    line-height: 1.6;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.section {
+    margin-bottom: 60px;
+}
+
+.sectionTitle {
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+.footerSection {
+    background: #1a1a1a;
+    padding: 30px;
+    border-radius: 16px;
+    margin-top: 60px;
+}
+
+.footerSection h3 {
+    margin: 0 0 20px 0;
+    color: #ddd;
+    font-size: 1.2rem;
+}
+
+.tagCloud {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 30px;
+}
+
+.tagChip {
+    background: #333;
+    color: #ddd;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+    border: 1px solid transparent;
+}
+
+.tagChip:hover {
+    background: #444;
+    color: var(--accent-color);
+    border-color: var(--accent-color);
+    transform: translateY(-2px);
+}
+
+.backLink {
+    text-align: center;
+    margin-top: 20px;
+    border-top: 1px solid #333;
+    padding-top: 20px;
+}
+
+.backLink a {
+    color: var(--accent-color);
+    font-weight: bold;
+}

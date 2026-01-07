@@ -1,0 +1,25 @@
+{
+  "name": "anti-stock",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "update-news": "node src/scripts/update-news.js"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.89.0",
+    "date-fns": "^4.1.0",
+    "next": "latest",
+    "react": "latest",
+    "react-dom": "latest",
+    "rss-parser": "^3.13.0",
+    "slugify": "^1.6.6"
+  },
+  "devDependencies": {
+    "eslint": "^9",
+    "eslint-config-next": "latest"
+  }
+}

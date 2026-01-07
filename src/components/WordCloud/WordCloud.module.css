@@ -1,0 +1,41 @@
+.cloudContainer {
+    background: var(--card-bg);
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 30px;
+    border: 1px solid var(--border-color);
+    text-align: center;
+}
+
+.title {
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-size: 1.2rem;
+    color: #fff;
+}
+
+.cloud {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+}
+
+.word {
+    color: var(--accent-color);
+    font-weight: bold;
+    cursor: default;
+    transition: transform 0.2s;
+    text-shadow: 0 0 10px rgba(0, 219, 189, 0.2);
+}
+
+.word:hover {
+    transform: scale(1.1);
+    color: #fff;
+    z-index: 1;
+}
+
+.empty {
+    color: #666;
+}

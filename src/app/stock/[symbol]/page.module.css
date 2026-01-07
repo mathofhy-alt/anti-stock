@@ -1,0 +1,138 @@
+.container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.header {
+    margin: 40px 0;
+    text-align: center;
+}
+
+.breadcrumb {
+    color: #666;
+    margin-bottom: 20px;
+    font-size: 0.9rem;
+}
+
+.breadcrumb a {
+    color: #888;
+    text-decoration: none;
+}
+
+.breadcrumb a:hover {
+    color: #00dbbd;
+}
+
+.title {
+    font-size: 2.5rem;
+    color: #fff;
+    margin-bottom: 15px;
+}
+
+.code {
+    font-size: 1.2rem;
+    color: #666;
+    font-weight: 400;
+    margin-left: 10px;
+}
+
+.desc {
+    font-size: 1.1rem;
+    color: #bbb;
+    line-height: 1.6;
+    max-width: 700px;
+    margin: 0 auto 20px;
+}
+
+.tags {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.tag {
+    background: #1a1a1a;
+    padding: 6px 12px;
+    border-radius: 15px;
+    color: #00dbbd;
+    font-size: 0.9rem;
+    border: 1px solid #333;
+}
+
+.section {
+    margin-bottom: 60px;
+}
+
+.sectionTitle {
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+    border-left: 4px solid #00dbbd;
+    padding-left: 15px;
+    color: #fff;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.empty {
+    text-align: center;
+    color: #666;
+    padding: 40px;
+    background: #111;
+    border-radius: 8px;
+}
+
+.relatedSection {
+    background: #111;
+    padding: 30px;
+    border-radius: 12px;
+    text-align: center;
+}
+
+.relatedSection h3 {
+    color: #888;
+    margin-bottom: 20px;
+}
+
+.relatedList {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.relatedCard {
+    display: flex;
+    flex-direction: column;
+    background: #222;
+    padding: 15px 25px;
+    border-radius: 8px;
+    color: #fff;
+    text-decoration: none;
+    transition: background 0.2s;
+}
+
+.relatedCard:hover {
+    background: #333;
+}
+
+.relatedCard span {
+    color: #666;
+    font-size: 0.8rem;
+    margin-top: 5px;
+}
+
+@media (max-width: 768px) {
+    .title {
+        font-size: 2rem;
+    }
+
+    .grid {
+        grid-template-columns: 1fr;
+    }
+}
