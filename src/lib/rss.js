@@ -1,19 +1,8 @@
-// 1. 모든 import는 파일 맨 위에 있어야 합니다.
 import { supabase } from '@/lib/supabase';
 
-/**
- * 최신 뉴스 목록을 가져오는 함수
- */
 export async function getLatestNews() {
-    // 2. Vercel 빌드 타임에 DB 호출을 건너뛰고 싶다면, 
-    // export 내부에서 조건을 체크해야 합니다.
-    if (process.env.VERCEL === "1") {
-        console.log("⚠️ Build mode: skip rss fetch");
-        return [];
-    }
-
     try {
-        // Supabase에서 데이터 가져오기
+        // 1. Supabase에서 데이터 가져오기 (빌드 시에도 실행됨)
         const { data, error } = await supabase
             .from('news')
             .select('*')
@@ -27,7 +16,7 @@ export async function getLatestNews() {
 
         if (!data) return [];
 
-        // 데이터 매핑
+        // 2. 데이터 매핑
         return data.map(item => ({
             id: item.slug,
             title: item.title,
@@ -47,9 +36,7 @@ export async function getLatestNews() {
     }
 }
 
-/**
- * 특정 ID(Slug)로 뉴스 상세 정보를 가져오는 함수
- */
+// 상세 페이지용 데이터 가져오기
 export async function getNewsById(slug) {
     const { data, error } = await supabase
         .from('news')
@@ -74,9 +61,7 @@ export async function getNewsById(slug) {
     };
 }
 
-/**
- * 관련 뉴스 추천 함수
- */
+// 관련 뉴스 추천
 export async function getRelatedNews(currentNews) {
     if (!currentNews) return [];
 
