@@ -1,3 +1,10 @@
+if (process.env.VERCEL === "1") {
+    console.log("⚠️ Build mode: skip rss fetch");
+    export async function getLatestNews() {
+        return [];
+    }
+}
+
 import { supabase } from '@/lib/supabase';
 
 // Replaced JSON read with Supabase Query
