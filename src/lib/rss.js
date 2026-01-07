@@ -1,16 +1,19 @@
-if (process.env.VERCEL === "1") {
-    console.log("⚠️ Build mode: skip rss fetch");
-    export async function getLatestNews() {
-        return [];
-    }
-}
-
+// 1. 모든 import는 파일 맨 위에 있어야 합니다.
 import { supabase } from '@/lib/supabase';
 
-// Replaced JSON read with Supabase Query
+/**
+ * 최신 뉴스 목록을 가져오는 함수
+ */
 export async function getLatestNews() {
+    // 2. Vercel 빌드 타임에 DB 호출을 건너뛰고 싶다면, 
+    // export 내부에서 조건을 체크해야 합니다.
+    if (process.env.VERCEL === "1") {
+        console.log("⚠️ Build mode: skip rss fetch");
+        return [];
+    }
+
     try {
-        // 1. Fetch from DB
+        // Supabase에서 데이터 가져오기
         const { data, error } = await supabase
             .from('news')
             .select('*')
@@ -24,7 +27,7 @@ export async function getLatestNews() {
 
         if (!data) return [];
 
-        // 2. Map DB keys to App keys
+        // 데이터 매핑
         return data.map(item => ({
             id: item.slug,
             title: item.title,
@@ -39,13 +42,15 @@ export async function getLatestNews() {
             imageUrl: item.image_url
         }));
     } catch (err) {
-        console.error("⚠️ getLatestNews Exception (Network/DNS?):", err);
+        console.error("⚠️ getLatestNews Exception:", err);
         return [];
     }
 }
 
+/**
+ * 특정 ID(Slug)로 뉴스 상세 정보를 가져오는 함수
+ */
 export async function getNewsById(slug) {
-    // Direct DB Query by Slug
     const { data, error } = await supabase
         .from('news')
         .select('*')
@@ -69,11 +74,12 @@ export async function getNewsById(slug) {
     };
 }
 
+/**
+ * 관련 뉴스 추천 함수
+ */
 export async function getRelatedNews(currentNews) {
     if (!currentNews) return [];
 
-    // Simple related logic via RPC or Client Filtering
-    // Ideally use Supabase Text Search or RPC, but client-side filter of top 50 is fine for MVP
     const { data } = await supabase
         .from('news')
         .select('*')
