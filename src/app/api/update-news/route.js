@@ -15,10 +15,10 @@ const DOMESTIC_FEEDS = [
     { name: '매일경제', url: 'https://www.mk.co.kr/rss/30000001/' },
     { name: 'JTBC', url: 'https://fs.jtbc.co.kr/RSS/newsflash.xml' },
     { name: '한경', url: 'https://rss.hankyung.com/feed/market.xml' },
-    { name: '머니투데이', url: 'https://rss.mt.co.kr/mt_section.xml?cid=stock' }, // [NEW]
-    { name: '이데일리', url: 'https://rss.edaily.co.kr/stock_news.xml' },       // [NEW]
-    { name: '지디넷', url: 'https://zdnet.co.kr/rss/zdnet.xml' },               // [NEW] Tech
-    { name: '전자신문', url: 'https://rss.etnews.com/Section902.xml' }          // [NEW] Tech
+    { name: '머니투데이', url: 'https://rss.mt.co.kr/mt_section.xml?cid=stock' },
+    { name: '이데일리', url: 'https://rss.edaily.co.kr/stock_news.xml' },
+    { name: '지디넷', url: 'https://zdnet.co.kr/rss/zdnet.xml' },
+    { name: '전자신문', url: 'https://rss.etnews.com/Section902.xml' }
 ];
 
 // Helper: SHA256 Hash
@@ -43,25 +43,22 @@ async function fetchArticleContent(url) {
         // Strategy: Look for common article body containers
         let content = '';
         const selectors = [
-            // Standard semantic tags
             'article', '[itemprop="articleBody"]', '.article-body', '.news_body', '#articleBody',
-            // Specific site selectors
             '.news_view', '#newsView', '.art_body', '.read_body'
         ];
 
         for (const selector of selectors) {
             const el = $(selector);
             if (el.length > 0) {
-                // Get all paragraphs
                 el.find('p').each((i, p) => {
                     const text = $(p).text().trim();
                     if (text.length > 20) content += `<p>${text}</p>\n`;
                 });
-                break; // Stop if found
+                break;
             }
         }
 
-        // Fallback: If no dedicated container, try to find substantial paragraphs in body
+        // Fallback
         if (content.length < 100) {
             $('body p').each((i, p) => {
                 const text = $(p).text().trim();
@@ -102,26 +99,60 @@ async function generateAICommentary(newsItem) {
         - (Actionable item 1)
         - (Actionable item 2)
         - (Actionable item 3)
-        - (Actionable item 4)
-        - (Actionable item 5)
 
         ## 리스크 요인
         - (Risk 1)
         - (Risk 2)
-        - (Risk 3)
 
         ## 관련 키워드
-        #Keyword1 #Keyword2 #Keyword3 #Keyword4 #Keyword5
+        #Keyword1 #Keyword2 #Keyword3
         `;
 
         const result = await model.generateContent(prompt);
         const response = await result.response;
-        let text = response.text();
-
-        return text;
+        return response.text();
     } catch (e) {
         console.error("Gemini Gen Error:", e);
         return null;
+    }
+}
+
+// Helper: Send Telegram Message
+async function sendTelegramMessage(item, summary) {
+    const token = process.env.TELEGRAM_BOT_TOKEN;
+    const chatId = process.env.TELEGRAM_CHAT_ID;
+
+    if (!token || !chatId) return;
+
+    try {
+        const oneLine = summary.match(/한줄 요약\n(.*)/)?.[1] || item.title;
+        // Clean markdown/html from summary if needed, but here we just take the line
+        // Telegram supports basic HTML: b, i, a, code, pre
+        const cleanOneLine = oneLine.replace(/[*_`]/g, '').trim();
+
+        const message = `
+🚨 <b>[${item.source}] 속보 알림</b>
+
+📰 <b>${item.title}</b>
+
+💡 <b>AI 한줄 요약</b>:
+${cleanOneLine}
+
+👉 <a href="https://info.stac100.com/news/${item.slug}">자세히 보기 (AI 분석 전문)</a>
+        `.trim();
+
+        await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                chat_id: chatId,
+                text: message,
+                parse_mode: 'HTML',
+                disable_web_page_preview: false
+            })
+        });
+    } catch (e) {
+        console.error('Telegram Send Error:', e);
     }
 }
 
@@ -130,7 +161,6 @@ export async function GET(request) {
     const { searchParams } = new URL(request.url);
     const secret = searchParams.get('secret');
     if (secret !== process.env.UPDATE_NEWS_SECRET) {
-        // Allow local testing without secret if in dev
         if (process.env.NODE_ENV !== 'development') {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
@@ -169,18 +199,12 @@ export async function GET(request) {
         for (const feed of allFeeds) {
             try {
                 const feedData = await parser.parseURL(feed.url);
-
-                // Process only latest 5 items per feed to avoid timeout
                 const recentItems = feedData.items.slice(0, 5);
 
                 for (const item of recentItems) {
                     if (!item.link) continue;
 
-                    // 2. Hash Check (Deduplication)
                     const hash = generateHash(item.link);
-
-                    // Optimization: Check existing locally if possible, but for now rely on DB constraints + upsert
-                    // Checking DB for hash existence before scrape saves scraping time
                     const { data: existing } = await supabaseAdmin
                         .from('news')
                         .select('id')
@@ -192,21 +216,18 @@ export async function GET(request) {
                         continue;
                     }
 
-                    // 3. New Content Processing
                     const fullContent = await fetchArticleContent(item.link);
                     const finalContent = fullContent || item.content || item.contentSnippet || "";
 
                     const analysisText = (item.title + " " + (item.contentSnippet || "") + " " + finalContent).toLowerCase();
                     const { region, tags, sentiment } = analyzeNews(analysisText);
 
-                    // Slug Generation
                     let rawSlug = `${feed.name}-${item.isoDate || new Date().toISOString()}-${item.title}`;
                     const safeSlug = slugify(rawSlug, { lower: true, strict: true, remove: /[*+~.()'"!:@]/g }).slice(0, 100);
 
-                    // 4. Supabase Insert
                     const { error } = await supabaseAdmin
                         .from('news')
-                        .insert({ // Changed from upsert to insert because we want to fail on duplicates (or ignore)
+                        .insert({
                             slug: safeSlug,
                             title: item.title,
                             url: item.link,
@@ -219,11 +240,10 @@ export async function GET(request) {
                             content: finalContent,
                             importance: sentiment,
                             published_at: item.isoDate ? new Date(item.isoDate) : new Date(),
-                            ai_generated: false // Default to false
-                        }); // We rely on unique 'hash' constraint to throw error if dup
+                            ai_generated: false
+                        });
 
                     if (error) {
-                        // Duplicate key error is expected and fine
                         if (error.code === '23505') {
                             skippedCount++;
                         } else {
@@ -242,26 +262,28 @@ export async function GET(request) {
 
         // === Phase 2: AI Generation ===
         if (process.env.GEMINI_API_KEY) {
-            // Fetch pending items (Limit 5 per run to save tokens)
             const { data: pendingItems } = await supabaseAdmin
                 .from('news')
                 .select('*')
                 .eq('ai_generated', false)
-                .not('content', 'is', null) // Only if content exists
+                .not('content', 'is', null)
                 .limit(5);
 
             if (pendingItems && pendingItems.length > 0) {
                 for (const item of pendingItems) {
                     const commentary = await generateAICommentary(item);
                     if (commentary) {
-                        // Update DB
                         await supabaseAdmin
                             .from('news')
                             .update({
-                                summary: commentary, // Replace summary with AI insight
+                                summary: commentary,
                                 ai_generated: true
                             })
                             .eq('id', item.id);
+
+                        // Telegram Broadcast
+                        await sendTelegramMessage(item, commentary);
+
                         generatedCount++;
                     }
                 }
