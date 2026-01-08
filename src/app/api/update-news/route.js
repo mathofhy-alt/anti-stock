@@ -118,10 +118,15 @@ async function generateAICommentary(newsItem) {
 }
 
 export async function GET(request) {
-    // 1. Verify Secret
+    // 1. Verify Secret (Support both URL param and Vercel Cron Secret header)
     const { searchParams } = new URL(request.url);
     const secret = searchParams.get('secret');
-    if (secret !== process.env.UPDATE_NEWS_SECRET) {
+    const authHeader = request.headers.get('Authorization');
+
+    const isValidSecret = secret === process.env.UPDATE_NEWS_SECRET;
+    const isValidCron = authHeader === `Bearer ${process.env.CRON_SECRET}`;
+
+    if (!isValidSecret && !isValidCron) {
         if (process.env.NODE_ENV !== 'development') {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
