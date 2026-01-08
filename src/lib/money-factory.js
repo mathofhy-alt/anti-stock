@@ -25,12 +25,20 @@ export function generateMoneyMetadata(category, slug) {
             description: data.description,
             url: url,
             type: 'article',
-            // images: [] // Add default OG image if available
+            images: [
+                {
+                    url: `https://info.stac100.com/api/og?title=${encodeURIComponent(data.title)}&category=${encodeURIComponent(category)}&tags=${encodeURIComponent((data.tags || []).join(','))}`,
+                    width: 1200,
+                    height: 630,
+                    alt: data.title,
+                }
+            ]
         },
         twitter: {
             card: 'summary_large_image',
             title: data.title,
             description: data.description,
+            images: [`https://info.stac100.com/api/og?title=${encodeURIComponent(data.title)}&category=${encodeURIComponent(category)}&tags=${encodeURIComponent((data.tags || []).join(','))}`],
         }
     };
 }

@@ -71,7 +71,7 @@ export default function MoneyPageTemplate({ category, slug }) {
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '8px' }}>
                     <Link href="/money/us-stocks/tax" style={{ textDecoration: 'none', color: '#007bff', fontSize: '0.9rem', fontWeight: 'bold' }}>🇺🇸 미국주식 세금</Link>
                     <Link href="/money/dividend/monthly-dividend-realty-income-o" style={{ textDecoration: 'none', color: '#007bff', fontSize: '0.9rem', fontWeight: 'bold' }}>💸 월배당 리얼티인컴</Link>
-                    <Link href="/money/etf/best-us-etf-2025" style={{ textDecoration: 'none', color: '#007bff', fontSize: '0.9rem', fontWeight: 'bold' }}>📈 2025 추천 ETF</Link>
+                    <Link href="/money/etf/best" style={{ textDecoration: 'none', color: '#007bff', fontSize: '0.9rem', fontWeight: 'bold' }}>📈 2025 추천 ETF</Link>
                     <Link href="/money/us-stocks/capital-gains-calculator" style={{ textDecoration: 'none', color: '#007bff', fontSize: '0.9rem', fontWeight: 'bold' }}>🧮 양도세 계산기</Link>
                     <Link href="/money/dividend/high-dividend-etf-ranking" style={{ textDecoration: 'none', color: '#007bff', fontSize: '0.9rem', fontWeight: 'bold' }}>🏆 고배당 ETF 순위</Link>
                     <Link href="/money/etf/sp500-etf-spy-voo-ivv" style={{ textDecoration: 'none', color: '#007bff', fontSize: '0.9rem', fontWeight: 'bold' }}>📊 S&P500 비교</Link>
@@ -136,7 +136,7 @@ export default function MoneyPageTemplate({ category, slug }) {
                                 <ul style={{ margin: 0, paddingLeft: '20px' }}>
                                     <li style={{ marginBottom: '5px' }}><Link href="/money/us-stocks/us-stock-tax-saving-tips">세금 250만원 아끼는 절세 비법 5가지</Link></li>
                                     <li style={{ marginBottom: '5px' }}><Link href="/money/dividend/monthly-dividend-portfolio-1m">월 100만원 배당 받는 포트폴리오 공개</Link></li>
-                                    <li><Link href="/money/etf/jepi-jepq-comparison">JEPI vs JEPQ: 은퇴자를 위한 선택은?</Link></li>
+                                    <li><Link href="/money/dividend/covered-call-etf-guide">JEPI vs JEPQ: 은퇴자를 위한 선택은?</Link></li>
                                 </ul>
                             </div>
                         )}
@@ -210,7 +210,7 @@ export default function MoneyPageTemplate({ category, slug }) {
                     {/* ETF Col */}
                     <div style={{ background: '#fff', border: '1px solid #ddd', padding: '15px', borderRadius: '8px' }}>
                         <div style={{ fontWeight: 'bold', marginBottom: '10px', color: '#3498db' }}>3. ETF 모으기</div>
-                        <Link href="/money/etf/best-us-etf-2025" style={{ display: 'block', marginBottom: '5px', fontSize: '0.9rem', color: '#333', textDecoration: 'none' }}>→ 2025 유망 ETF</Link>
+                        <Link href="/money/etf/best" style={{ display: 'block', marginBottom: '5px', fontSize: '0.9rem', color: '#333', textDecoration: 'none' }}>→ 2025 유망 ETF</Link>
                         <Link href="/money/etf/sp500-etf-spy-voo-ivv" style={{ display: 'block', marginBottom: '5px', fontSize: '0.9rem', color: '#333', textDecoration: 'none' }}>→ S&P500 수수료 비교</Link>
                     </div>
                     {/* Portfolio Col */}
