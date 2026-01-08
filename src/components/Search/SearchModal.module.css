@@ -1,0 +1,127 @@
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(5px);
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding-top: 100px;
+    animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.modal {
+    background: var(--card-bg);
+    width: 90%;
+    max-width: 600px;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    overflow: hidden;
+    animation: slideDown 0.2s ease-out;
+}
+
+@keyframes slideDown {
+    from {
+        transform: translateY(-20px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid var(--border-color);
+    padding: 15px;
+}
+
+.input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    font-size: 1.1rem;
+    color: var(--text-color);
+    outline: none;
+    font-family: inherit;
+}
+
+.closeBtn {
+    background: transparent;
+    border: none;
+    color: #888;
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 5px;
+}
+
+.closeBtn:hover {
+    color: var(--accent-color);
+}
+
+.body {
+    max-height: 60vh;
+    overflow-y: auto;
+}
+
+.list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.item {
+    border-bottom: 1px solid var(--border-color);
+}
+
+.item a {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    text-decoration: none;
+    transition: background 0.2s;
+}
+
+.item a:hover {
+    background: rgba(0, 219, 189, 0.05);
+}
+
+.catBadge {
+    font-size: 0.7rem;
+    background: #333;
+    color: #bbb;
+    padding: 2px 6px;
+    border-radius: 4px;
+    margin-right: 10px;
+    min-width: 70px;
+    text-align: center;
+}
+
+.itemTitle {
+    color: var(--text-color);
+    font-size: 0.95rem;
+}
+
+.empty {
+    padding: 40px;
+    text-align: center;
+    color: #888;
+}

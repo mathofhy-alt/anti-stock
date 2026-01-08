@@ -2,7 +2,7 @@
     position: sticky;
     top: 0;
     z-index: 100;
-    background: rgba(17, 17, 17, 0.8);
+    background: var(--nav-bg);
     backdrop-filter: blur(10px);
     border-bottom: 1px solid var(--border-color);
     padding: 0 20px;
@@ -20,7 +20,7 @@
 .logo {
     font-size: 1.5rem;
     font-weight: 800;
-    color: #fff;
+    color: var(--text-color);
 }
 
 .logo a {
@@ -41,10 +41,42 @@
 .links a {
     font-weight: 500;
     font-size: 0.95rem;
-    color: #ccc;
+    color: #888;
     transition: color 0.2s;
 }
 
 .links a:hover {
     color: var(--accent-color);
+}
+
+/* Utilities Group (Right Side) */
+.utilities {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.searchBtn {
+    background: transparent;
+    border: none;
+    color: var(--text-color);
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 5px;
+    transition: color 0.2s;
+    display: flex;
+    align-items: center;
+}
+
+.searchBtn:hover {
+    color: var(--accent-color);
+    transform: scale(1.1);
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .links {
+        display: none;
+        /* Simplify for mobile, rely on Home? Or keep it simple */
+    }
 }
