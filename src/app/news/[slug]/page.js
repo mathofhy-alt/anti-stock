@@ -8,8 +8,9 @@ import styles from './page.module.css';
 import { STOCK_DATA } from '@/data/stocks';
 import AdSenseSlot from '@/components/AdSenseSlot/AdSenseSlot';
 import ScrollTrigger from '@/components/ScrollTrigger/ScrollTrigger';
+import { getContextualMoneyPages } from '@/lib/money-factory';
+import ContextualMoneyBlock from '@/components/News/ContextualMoneyBlock';
 
-// Force static generation for these params
 // Force static generation for these params
 export async function generateStaticParams() {
     try {
@@ -78,6 +79,9 @@ export default async function NewsDetail({ params }) {
     const relatedNews = await getRelatedNews(news);
     const shortSummary = news.summary.slice(0, 160);
     const canonicalUrl = `https://info.stac100.com/news/${news.id}`;
+
+    // Contextual Money Guides
+    const contextualGuides = getContextualMoneyPages(news.title + " " + (news.content || news.summary));
 
     // JSON-LD: NewsArticle
     const jsonLd = {
@@ -277,22 +281,8 @@ export default async function NewsDetail({ params }) {
                     </div>
                 </div>
 
-                {/* 4. [SEO Injection] Related Investment Guides */}
-                <div style={{ marginTop: '40px' }}>
-                    <h2 style={{ fontSize: '1.3rem', marginBottom: '20px', borderLeft: '4px solid #00dbbd', paddingLeft: '10px' }}>💡 투자자가 꼭 봐야 할 가이드</h2>
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '15px' }}>
-                        {[
-                            { title: '🇺🇸 미국주식 세금(양도세) 가이드', url: '/money/us-stocks/tax' },
-                            { title: '📈 수익률 Best ETF Top 10', url: '/money/etf/best' },
-                            { title: '🗓️ 매달 월세받는 포트폴리오(월배당)', url: '/money/dividend/monthly' }
-                        ].map((guide, idx) => (
-                            <Link key={idx} href={guide.url} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: '#222', padding: '15px', borderRadius: '10px', border: '1px solid #444' }}>
-                                <span style={{ color: '#fff', fontWeight: 'bold' }}>{guide.title}</span>
-                                <span style={{ color: '#00dbbd' }}>읽기 →</span>
-                            </Link>
-                        ))}
-                    </div>
-                </div>
+                {/* 4. [REVENUE] Contextual Money Block (Dynamic) */}
+                <ContextualMoneyBlock guides={contextualGuides} />
 
             </section>
 

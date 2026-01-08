@@ -135,3 +135,45 @@ export function getHighValuePage() {
         ...data
     };
 }
+
+// 7. Get Contextual Money Pages (Scoring System)
+export function getContextualMoneyPages(text, limit = 4) {
+    if (!text) return [];
+
+    const searchTerms = text.toLowerCase().split(/\s+/).filter(w => w.length > 1);
+    const scoredPages = [];
+
+    // Flatten Data
+    Object.keys(MONEY_LONGTAIL_DATA).forEach(category => {
+        Object.keys(MONEY_LONGTAIL_DATA[category]).forEach(slug => {
+            const page = MONEY_LONGTAIL_DATA[category][slug];
+            let score = 0;
+
+            // 1. High Value Bias
+            if (category === 'us-stocks' && page.slug.includes('tax')) score += 20; // Tax is King
+            if (page.specialComponent) score += 20; // Calculators are King
+            if (category === 'etf') score += 10;
+            if (category === 'dividend') score += 5;
+
+            // 2. Keyword Matching
+            const pageText = (page.title + " " + page.h1 + " " + (page.tags || []).join(" ")).toLowerCase();
+
+            // Speed optimization: Check common keywords first
+            if (text.includes('배당') && pageText.includes('배당')) score += 15;
+            if (text.includes('세금') && pageText.includes('세금')) score += 20;
+            if (text.includes('etf') && pageText.includes('etf')) score += 10;
+
+            // 3. Fallback Random Shuffle (to ensure variety if score is 0)
+            score += Math.random() * 2;
+
+            scoredPages.push({
+                ...page,
+                url: `/money/${category}/${slug}`,
+                score
+            });
+        });
+    });
+
+    // Sort by Score Desc
+    return scoredPages.sort((a, b) => b.score - a.score).slice(0, limit);
+}

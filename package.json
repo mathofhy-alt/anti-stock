@@ -10,7 +10,9 @@
     "update-news": "node src/scripts/update-news.js"
   },
   "dependencies": {
+    "@google/generative-ai": "^0.24.1",
     "@supabase/supabase-js": "^2.89.0",
+    "cheerio": "^1.1.2",
     "date-fns": "^4.1.0",
     "next": "latest",
     "react": "latest",
