@@ -117,45 +117,6 @@ async function generateAICommentary(newsItem) {
     }
 }
 
-// Helper: Send Telegram Message
-async function sendTelegramMessage(item, summary) {
-    const token = process.env.TELEGRAM_BOT_TOKEN;
-    const chatId = process.env.TELEGRAM_CHAT_ID;
-
-    if (!token || !chatId) return;
-
-    try {
-        const oneLine = summary.match(/한줄 요약\n(.*)/)?.[1] || item.title;
-        // Clean markdown/html from summary if needed, but here we just take the line
-        // Telegram supports basic HTML: b, i, a, code, pre
-        const cleanOneLine = oneLine.replace(/[*_`]/g, '').trim();
-
-        const message = `
-🚨 <b>[${item.source}] 속보 알림</b>
-
-📰 <b>${item.title}</b>
-
-💡 <b>AI 한줄 요약</b>:
-${cleanOneLine}
-
-👉 <a href="https://info.stac100.com/news/${item.slug}">자세히 보기 (AI 분석 전문)</a>
-        `.trim();
-
-        await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                chat_id: chatId,
-                text: message,
-                parse_mode: 'HTML',
-                disable_web_page_preview: false
-            })
-        });
-    } catch (e) {
-        console.error('Telegram Send Error:', e);
-    }
-}
-
 export async function GET(request) {
     // 1. Verify Secret
     const { searchParams } = new URL(request.url);
@@ -280,9 +241,6 @@ export async function GET(request) {
                                 ai_generated: true
                             })
                             .eq('id', item.id);
-
-                        // Telegram Broadcast
-                        await sendTelegramMessage(item, commentary);
 
                         generatedCount++;
                     }
