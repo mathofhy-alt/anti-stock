@@ -21,24 +21,21 @@ export default async function Home() {
     const popularStocks = popularSymbols.map(s => STOCK_DATA[s]).filter(Boolean);
 
     // A. Daily Market Summary (Simulated)
-    // Logic: Take top 3 Domestic and Overseas headlines
     const domesticNews = news.filter(n => n.category === 'Domestic').slice(0, 3);
     const overseasNews = news.filter(n => n.category === 'Overseas').slice(0, 3);
 
     const domesticSummary = domesticNews.map(n => n.title).join(' / ');
     const overseasSummary = overseasNews.map(n => n.title).join(' / ');
 
-    // B. Real-time Trend Keywords (Top 10) - Enhanced Filtering
+    // B. Real-time Trend Keywords (Top 10)
     const allText = news.map(n => n.title + " " + n.tags.join(" ")).join(' ');
 
-    // 1. Cleaning Regex: Remove special chars, brackets, URLs
     const cleanText = allText
-        .replace(/\[.*?\]/g, '') // remove [brackets]
-        .replace(/\(.*?\) /g, '') // remove (parentheses)
-        .replace(/[^\w\s가-힣]/g, ' ') // remove special chars
-        .replace(/https?:\/\/[^\s]+/g, ''); // remove URLs
+        .replace(/\[.*?\]/g, '')
+        .replace(/\(.*?\) /g, '')
+        .replace(/[^\w\s가-힣]/g, ' ')
+        .replace(/https?:\/\/[^\s]+/g, '');
 
-    // 2. Stopwords List (Noise Filter)
     const stopWords = new Set([
         'by', '한국어', 'english', 'investing', 'investingcom', 'daum', 'net', 'naver', 'google', 'reuters',
         '기자', '속보', '단독', '종합', '특징주', '마감', '출발', '오전', '오후', '공시', '뉴스', '오늘', '관련',
@@ -51,13 +48,9 @@ export default async function Home() {
     const words = cleanText.split(/\s+/)
         .filter(w => {
             const word = w.toLowerCase().trim();
-            // Length check (>1)
             if (word.length <= 1) return false;
-            // Number restriction (exclude purely numeric or money-like strings)
             if (/^\d+$/.test(word)) return false;
-            // Stopwords check
             if (stopWords.has(word)) return false;
-            // Domain check
             if (word.includes('.')) return false;
             return true;
         });
@@ -65,18 +58,27 @@ export default async function Home() {
     const freq = {};
     words.forEach(w => freq[w] = (freq[w] || 0) + 1);
 
-    // Sort and Take Top 10
     const trendKeywords = Object.entries(freq)
-        .sort((a, b) => b[1] - a[1]) // High frequency first
+        .sort((a, b) => b[1] - a[1])
         .slice(0, 10)
         .map(e => e[0]);
 
-    // C. Sector Flows (Semicon, AI, Battery, etc)
+    // C. Sector Flows
     const majorSectors = ['반도체', 'AI', '2차전지', '바이오'];
     const sectorFlows = {};
     majorSectors.forEach(sec => {
         sectorFlows[sec] = news.filter(n => n.tags.includes(sec)).slice(0, 3);
     });
+
+    // D. SEO High-Value Guides Definition
+    const seoGuides = [
+        { title: '🇺🇸 미국주식 세금 총정리', url: '/money/us-stocks/tax', desc: '양도세 절세 A to Z' },
+        { title: '💸 배당소득 건보료 폭탄 방지', url: '/money/us-stocks/health-insurance-dividend-tax', desc: '수익을 지키는 필수 상식' },
+        { title: '🏆 2025 유망 ETF Top 10', url: '/money/etf/best', desc: '지금 사야 할 ETF 추천' },
+        { title: '🤖 AI & 로봇 ETF 투자 가이드', url: '/money/etf/ai-robotics-etf', desc: '엔비디아 이후의 기회' },
+        { title: '📊 S&P500 ETF 3대장 비교', url: '/money/etf/sp500-etf-spy-voo-ivv', desc: '수수료 한 푼이라도 아끼기' },
+        { title: '📈 미국 장기채 ETF(TLT) 활용법', url: '/money/etf/long-term-bond-etf-tlt', desc: '금리 인하 시기 필수 전략' },
+    ];
 
     return (
         <main className={styles.main}>
@@ -106,20 +108,11 @@ export default async function Home() {
                     </div>
                 </section>
 
-
-
                 {/* [Updated Block] SEO High-Value Guides */}
                 <section className={styles.stockHubBlock} style={{ marginBottom: '40px' }}>
                     <h2 className={styles.blockTitle}>💰 돈이 되는 필수 투자 가이드</h2>
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '15px' }}>
-                        {[
-                            { title: '🇺🇸 미국주식 세금 총정리', url: '/money/us-stocks/tax', desc: '양도세 절세 꿀팁' },
-                            { title: '💸 미국 배당세 완전정복', url: '/money/us-stocks/dividend-tax', desc: '15% 원천징수의 비밀' },
-                            { title: '🏆 수익률 Best ETF 10선', url: '/money/etf/best', desc: '지금 사야 할 ETF' },
-                            { title: '🗓️ 월배당 ETF 포트폴리오', url: '/money/dividend/monthly', desc: '매월 따박따박 월세받기' },
-                            { title: '🤖 AI 반도체 유망주 분석', url: '/money/etf/ai', desc: '엔비디아 놓쳤다면 주목' },
-                            { title: '📉 금리인하 수혜주 찾기', url: '/money/market-guide/interest', desc: '금리 인하 시기 투자법' },
-                        ].map((item, idx) => (
+                        {seoGuides.map((item, idx) => (
                             <Link key={idx} href={item.url} style={{ background: '#222', padding: '20px', borderRadius: '12px', border: '1px solid #333', transition: 'all 0.2s', display: 'flex', flexDirection: 'column', gap: '5px' }}>
                                 <span style={{ fontSize: '1.1rem', fontWeight: 'bold', color: '#00dbbd' }}>{item.title}</span>
                                 <span style={{ fontSize: '0.9rem', color: '#888' }}>{item.desc}</span>
@@ -161,7 +154,6 @@ export default async function Home() {
                 </section>
 
                 {/* [Block 4] Sector Flow */}
-                {/* [4. Sector Hubs] */}
                 <section className={styles.section}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
                         <h2 className={styles.blockTitle}>📊 섹터별 흐름 바로가기</h2>

@@ -13,11 +13,11 @@ export const dynamic = 'force-dynamic';
 const GOOGLE_NEWS_KR = "https://news.google.com/rss?hl=ko&gl=KR&ceid=KR:ko";
 const DOMESTIC_FEEDS = [
     { name: '매일경제', url: 'https://www.mk.co.kr/rss/30000001/' },
-    { name: 'JTBC', url: 'https://fs.jtbc.co.kr/RSS/newsflash.xml' },
-    { name: '한경', url: 'https://rss.hankyung.com/feed/market.xml' },
-    { name: '머니투데이', url: 'https://rss.mt.co.kr/mt_section.xml?cid=stock' },
-    { name: '이데일리', url: 'https://rss.edaily.co.kr/stock_news.xml' },
-    { name: '지디넷', url: 'https://zdnet.co.kr/rss/zdnet.xml' },
+    { name: 'JTBC', url: 'https://fs.jtbc.joins.com/RSS/newsflash.xml' },
+    { name: '한국경제', url: 'https://www.hankyung.com/feed/finance' },
+    { name: '머니투데이', url: 'http://rss.moneytoday.co.kr/mt_news.xml' },
+    { name: '이데일리', url: 'http://rss.edaily.co.kr/stock_news.xml' }, // Try http for SSL
+    { name: '지디넷', url: 'http://feeds.feedburner.com/zdkorea' },
     { name: '전자신문', url: 'https://rss.etnews.com/Section902.xml' }
 ];
 
@@ -132,7 +132,45 @@ export async function GET(request) {
         }
     }
 
-    const parser = new Parser();
+    const parser = new Parser({
+        headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36' },
+        customFields: {
+            item: [
+                ['media:content', 'media:content', { keepArray: true }],
+                ['media:thumbnail', 'media:thumbnail'],
+                ['enclosure', 'enclosure'],
+                ['image', 'image'],
+            ]
+        }
+    });
+
+    const getImageUrl = (item) => {
+        // 1. media:content
+        if (item['media:content']) {
+            const media = Array.isArray(item['media:content']) ? item['media:content'][0] : item['media:content'];
+            if (media.$ && media.$.url) return media.$.url;
+            if (media.url) return media.url;
+        }
+        // 2. enclosure
+        if (item.enclosure && item.enclosure.url) return item.enclosure.url;
+        // 3. media:thumbnail or image field
+        const thumb = item['media:thumbnail'] || item.image;
+        if (thumb) {
+            if (thumb.$ && thumb.$.url) return thumb.$.url;
+            if (thumb.url) return thumb.url;
+            if (typeof thumb === 'string') return thumb;
+        }
+        // 4. content:encoded img tag (Regex fallback)
+        const content = item['content:encoded'] || item.content || item.description || "";
+        const imgMatch = content.match(/<img[^>]+src="([^">]+)"/);
+        if (imgMatch) {
+            const src = imgMatch[1];
+            if (src.startsWith('http')) return src;
+        }
+
+        return null;
+    };
+
     let insertedCount = 0;
     let skippedCount = 0;
     let generatedCount = 0;
@@ -205,6 +243,7 @@ export async function GET(request) {
                             summary: item.contentSnippet?.slice(0, 500) || '',
                             content: finalContent,
                             importance: sentiment,
+                            image_url: getImageUrl(item),
                             published_at: item.isoDate ? new Date(item.isoDate) : new Date(),
                             ai_generated: false
                         });

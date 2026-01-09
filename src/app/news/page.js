@@ -1,39 +1,39 @@
-
 import { getLatestNews } from '@/lib/rss';
 import NewsCard from '@/components/NewsCard/NewsCard';
 import Link from 'next/link';
+import styles from '../page.module.css';
 
 export const revalidate = 60;
-
-export const metadata = {
-    title: '전체 뉴스 - Anti-Stock',
-    description: '실시간 증시 뉴스 모아보기',
-};
 
 export default async function NewsPage() {
     const news = await getLatestNews();
 
     return (
-        <main style={{ maxWidth: '1200px', margin: '0 auto', padding: '20px' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px' }}>
-                <h1 style={{ fontSize: '1.8rem' }}>📰 전체 뉴스</h1>
-                <div style={{ display: 'flex', gap: '10px' }}>
-                    <Link href="/domestic" style={{ padding: '8px 16px', borderRadius: '20px', background: '#333', color: '#fff' }}>국내증시</Link>
-                    <Link href="/overseas" style={{ padding: '8px 16px', borderRadius: '20px', background: '#333', color: '#fff' }}>해외증시</Link>
-                </div>
-            </div>
+        <main className={styles.main}>
+            <div className={styles.container}>
+                <section className={styles.section}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px' }}>
+                        <h2 className={styles.sectionTitle}>📰 전체 뉴스 스트림</h2>
+                        <div style={{ display: 'flex', gap: '10px' }}>
+                            <Link href="/domestic" style={{ padding: '8px 16px', borderRadius: '20px', background: '#333', color: '#fff', fontSize: '0.9rem' }}>국내뉴스</Link>
+                            <Link href="/overseas" style={{ padding: '8px 16px', borderRadius: '20px', background: '#333', color: '#fff', fontSize: '0.9rem' }}>해외뉴스</Link>
+                        </div>
+                    </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '20px' }}>
-                {news.map((item) => (
-                    <NewsCard key={item.id} news={item} />
-                ))}
+                    {news.length > 0 ? (
+                        <div className={styles.grid}>
+                            {news.map((item) => (
+                                <NewsCard key={item.id} news={item} />
+                            ))}
+                        </div>
+                    ) : (
+                        <div style={{ textAlign: 'center', padding: '100px 0', color: '#888' }}>
+                            <p>실시간 뉴스를 불러오는 중이거나 데이터가 없습니다.</p>
+                            <Link href="/" style={{ color: '#00dbbd', marginTop: '20px', display: 'inline-block' }}>홈으로 돌아가기</Link>
+                        </div>
+                    )}
+                </section>
             </div>
-
-            {news.length === 0 && (
-                <div style={{ textAlign: 'center', padding: '50px', color: '#666' }}>
-                    <p>등록된 뉴스가 없습니다.</p>
-                </div>
-            )}
         </main>
     );
 }

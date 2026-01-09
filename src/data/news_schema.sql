@@ -11,6 +11,7 @@ create table if not exists public.news (
     tags text[],
     summary text,
     importance text default 'neutral',
+    image_url text,
     published_at timestamp with time zone
 );
 
@@ -19,6 +20,7 @@ create table if not exists public.news (
 alter table public.news add column if not exists hash text;
 alter table public.news add column if not exists content text;
 alter table public.news add column if not exists ai_generated boolean default false;
+alter table public.news add column if not exists image_url text;
 
 -- 3. Add Constraints (Safe update via DO block)
 do $$

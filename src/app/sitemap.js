@@ -57,7 +57,7 @@ export default async function sitemap() {
   console.log(`✅ [Sitemap] Money Pages: ${seoPages.length} (Priority 1.0: ${highValueCount})`);
 
   // 1. Static Routes
-  const staticRoutes = ['', '/stock', '/domestic', '/overseas', '/guide', '/about', '/privacy', '/disclaimer'].map((route) => ({
+  const staticRoutes = ['', '/news', '/topic', '/stock', '/domestic', '/overseas', '/guide', '/about', '/privacy', '/disclaimer'].map((route) => ({
     url: `${baseUrl}${route}`,
     lastModified: new Date(),
     changeFrequency: 'daily',
