@@ -80,7 +80,7 @@ export default async function ForecastPage() {
             <section style={{ marginBottom: '50px' }}>
                 <h2 className={styles.blockTitle}>📚 종목별 상세 주가 전망 (Forecasts)</h2>
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '15px' }}>
-                    {Object.entries(MONEY_LONGTAIL_DATA.forecast).map(([slug, item]) => (
+                    {Object.entries(MONEY_LONGTAIL_DATA.forecast || {}).map(([slug, item]) => (
                         <Link key={slug} href={`/money/forecast/${slug}`} style={{ background: '#222', padding: '20px', borderRadius: '12px', border: '1px solid #333', display: 'block' }}>
                             <strong style={{ display: 'block', fontSize: '1.1rem', marginBottom: '8px', color: '#00dbbd' }}>{item.title}</strong>
                             <p style={{ margin: 0, fontSize: '0.9rem', color: '#888', lineHeight: '1.5' }}>{item.intro.slice(0, 60)}...</p>
