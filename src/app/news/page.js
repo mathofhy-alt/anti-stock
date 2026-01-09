@@ -13,7 +13,7 @@ export default async function NewsPage() {
             <div className={styles.container}>
                 <section className={styles.section}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px' }}>
-                        <h2 className={styles.sectionTitle}>📰 전체 뉴스 스트림</h2>
+                        <h2 className={styles.sectionTitle}>📰 실시간 뉴스 스트림 [DEBUG:NEWS_LOADED]</h2>
                         <div style={{ display: 'flex', gap: '10px' }}>
                             <Link href="/domestic" style={{ padding: '8px 16px', borderRadius: '20px', background: '#333', color: '#fff', fontSize: '0.9rem' }}>국내뉴스</Link>
                             <Link href="/overseas" style={{ padding: '8px 16px', borderRadius: '20px', background: '#333', color: '#fff', fontSize: '0.9rem' }}>해외뉴스</Link>

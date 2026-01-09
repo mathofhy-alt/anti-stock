@@ -21,7 +21,7 @@ export default async function TopicListPage() {
         <main className={styles.main}>
             <div className={styles.container}>
                 <section className={styles.section}>
-                    <h2 className={styles.sectionTitle}>📈 실시간 트렌드 키워드</h2>
+                    <h2 className={styles.sectionTitle}>📈 실시간 트렌드 키워드 [DEBUG:TOPIC_LOADED]</h2>
                     <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', marginTop: '20px' }}>
                         {sortedTags.map(tag => (
                             <Link
