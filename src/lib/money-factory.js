@@ -152,8 +152,8 @@ export function getContextualMoneyPages(text, limit = 4) {
     const scoredPages = [];
 
     // Flatten Data
-    Object.keys(MONEY_LONGTAIL_DATA).forEach(category => {
-        Object.keys(MONEY_LONGTAIL_DATA[category]).forEach(slug => {
+    Object.keys(MONEY_LONGTAIL_DATA || {}).forEach(category => {
+        Object.keys(MONEY_LONGTAIL_DATA[category] || {}).forEach(slug => {
             const page = MONEY_LONGTAIL_DATA[category][slug];
             let score = 0;
 
